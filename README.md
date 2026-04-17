@@ -1,1 +1,795 @@
-# hebrew--reading-comprehension1
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מבחן בגרות מקוון - עברית</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(251, 191, 36, 0.2); 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(217, 119, 6, 0.4); 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(217, 119, 6, 0.6); 
+        }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans pb-20">
+
+    <!-- מסך טעינה של ה-AI -->
+    <div id="ai-loading" class="hidden fixed inset-0 bg-slate-900/85 z-[100] flex flex-col items-center justify-center text-white backdrop-blur-sm">
+        <div class="w-20 h-20 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-6 shadow-[0_0_15px_rgba(59,130,246,0.5)]"></div>
+        <h2 class="text-3xl font-bold mb-3">מערכת ה-AI בודקת את הבחינה...</h2>
+        <p class="text-blue-200 text-lg text-center max-w-md">אנא המתן, ניתוח התשובות שלך, בניית המחוון האישי והסקת ההמלצות עשויים לקחת מספר שניות.</p>
+    </div>
+
+    <div id="app"></div>
+
+    <script>
+        const TEXT_1 = `פסקה 1: בעשורים האחרונים הפכו פארקי המדע לסוג חדש של אַטְרַקְצִיָּה חינוכית, המשלבת בין בילוי לבין למידה. בפארקים אלה מבקרים תלמידים, משפחות ותיירים מְשׁוֹטְטִים בין תערוכות אינטראקטיביות, נהנים מִבּיּלּוִיים, ובו־בזמן רוכשים ידע בתחומי הטכנולוגיה, הקיימוּת והבריאות. מחקרים מראים כִּי הַגְשָׁמָה עַצְמִית של צעירים רבים קשורה לחוויות למידה חיוביות ומסקרנות. לכן מערכות חינוך רבות משקיעות משאבים בפיתוח סביבות למידה חדשניות, גם אם הדבר כרוך בְּצִמיָחה מהירה של עלויות התפעול.
+
+פסקה 2: כדי ליצור חוויית ביקור איכותית, מתכנני המוזיאונים נעזרים במגוון חומרים: מתכת, פלסטיק וַאֲרִיגִים מיוחדים. כל מודל וכל מוצג בנוי מֵאָרִיג מורכב של החלטות עיצוביות, הנדסיות וכלכליות. מֻמְחִית בתחום טֶקְסְטִיל למשל יכולה לייעץ כיצד לבחור בגד מיוחד לחליפת חלל, ואילו כַּלְכְּלָן יבחן האם ההשקעה משתלמת ביחס למספר המבקרים הצפוי.
+
+פסקה 3: אחד האתגרים בתכנון חוויות למידה הוא אִוְרוּר נכון של החללים. אם אין אִוְרוּר מספיק, הצפיפות עלולה לגרום לְחֹסֶר מַעֲשֶׂה מצד המבקרים: הם יעמדו בתור, יתלוננו על העומס, ולא ייגשו לנסות את המוצגים. מצד אחר, נְהִירָה מוגזמת של אנשים לחלל קטן עלולה לסכן את בריאותם במקרה של דְּלֵקָה או תקלה טכנית. לכן בפארקים מודרניים נעשה שימוש בחיישנים למדידת צפיפות, כדי למנוע הַסְלָמָה של מצבי סיכון.
+
+פסקה 4: במקרים רבים עומדים מנהלי הפארקים בפני דִּילֶמָה: האם לפתח עוד ועוד מִגַּלָּשׁוֹת מַיִם ואטרקציות ראווה, או להשקיע דווקא בתערוכות שקטות המדגישות חשיבה ביקורתית? חלקם חוששים מֵחֹסֶר וַדָּאוּת כלכלי, משום שאטרקציות צבעוניות מושכות קהל רב. אחרים מִסְתַּיְּגִים משימוש יתר בגירויים חזותיים, וטוענים כי יש להעדיף חֲוָיָה מוּחָשִׁית של ניסוי מדעי פשוט על פני מופעי ראווה יקרים.
+
+פסקה 5: גם נושא התזונה בפארקים אלה מעורר שאלות. מצד אחד, מבקרים רבים נוטים לְזִליָלה במזון מהיר ומשקאות מתוקים, בעיקר כשהם נמצאים בחופשה. מצד אחר, מומחי בריאות חוֹזִים עלייה משמעותית במחלות כרוניות הקשורות בהרגלי אכילה לקויים. מתוך רצון לספק נֶחָמָה קצרה למבקרים העייפים, חלק מן הפארקים משווקים מנות עתירות קלוריות, ויוצרים סתירה בין המסר המדעי לבריאות לבין המציאות המסחרית.
+
+פסקה 6: במדינות מסוימות הוקמו פארקי מדע באזורים הֲרָרִיִּים או בשולי ערים גדולות. כך ניתן לנצל קַרְקַע פנויה ובו־בזמן להציע נוף עֲנָקִי ומרשים. לעיתים נבנים במתחם גם מלונות יֻקְרָה, שמושכים קהל מבוסס. מבקרים אלה נוהגים לְהִתְחָרוֹת ביניהם על צילום התמונות המרשימות ביותר לרשתות החברתיות, ולהעלות צִטּוּטִים מעוררי השראה על למידה, מדע וחדשנות.
+
+פסקה 7: עיצוב התערוכות מסתמך לא רק על טכנולוגיה, אלא גם על מְיֻמָּנוּת אנושית גבוהה. אוצרים נדרשים להיות מְתֻכְנָנִים היטב, לתכנן את מסלול התנועה של המבקרים, ולבחון לְעִתִּים קרובות את יעילות כל מוצג. יש שפונים לְסִיטוֹנָאוּת כדי לרכוש חלקים טכניים במחירים נמוכים, ויש המעדיפים להזמין מוצרים ייחודיים מיצרנים קטנים. לעיתים מתגלה סְתִירָה בין הרצון לחסוך בעלויות לבין השאיפה לחדשנות.
+
+פסקה 8: הקשר בין פארקי המדע לשדות אחרים, כמו תעופה ותיירות, הולך ומתחזק. משפחות רבות מזמינות טיסות דרך נתב״ג ומקשרות את הביקור בפארק ליעד חופשה רחב יותר. מנהלי הפארקים עורכים סֶקֶר בקרב המבקרים, במטרה להבין אילו אַטְרַקְצִיּוֹת נחלו הצלחה. לעיתים הם נדרשים לְמַלֵּט פרויקטים יקרים מכישלון, אוֹ מִשֵּׁשׁ דגמים ישנים כדי להתאים אותם לטכנולוגיות חדשות. כך מתעצבת בהדרגה מערכת יחסים דינמית בין מדע, כלכלה וחברה, שבה כל החלטה עלולה להביא לְהַחְמָצָה של הזדמנות – או לפתוח פתח לצמיחה.`;
+
+        const SUMMARY_TEXT = `במסגרת שיתוף פעולה בין אוניברסיטה לבין פארק מדע חדש נערך סֶקֶר מקיף בקרב תלמידי תיכון. מטרת הסקר הייתה לבדוק האם הביקור בפארק תורם להגשמה עצמית ולבחירת מקצועות מדעיים בעתיד. מתכנני הסקר נדרשו לבחון הנחות שונות: יש שסברו כי חוסר ודאות כלכלי במשפחות רבות ימנע מן התלמידים להשתתף בפעילויות בתשלום, ואילו אחרים הניחו שפארקי המדע, דווקא בשל היותם אטרקציה יוקרתית, ימשכו גם תלמידים מרקע מוחלש. תוצאות הסקר הראו תמונה מורכבת, והדגישו את החשיבות של נהירה מבוקרת של משאבים ציבוריים לטובת יצירת חוויות לימוד נגישות לכל שכבות האוכלוסייה.`;
+
+        const examData = {
+            text1: TEXT_1,
+            summaryText: SUMMARY_TEXT,
+            pages: [
+                {
+                    title: "הוראות ומידע כללי",
+                    isIntro: true,
+                    content: "" // Content now handled specifically in renderApp for the intro layout
+                },
+                {
+                    title: "פרק ראשון: הבנת הנקרא (שאלות 1-2)",
+                    showText: true,
+                    questions: [
+                        { id: "q1a", type: "open", points: 3, instruction: "1. א. מהו הנושא המרכזי של הטקסט? הסבר/י במשפט אחד.", rubric: "הנושא המרכזי: פארקי מדע כסביבה חינוכית ותיירותית המשלבת בין בילוי חווייתי ללמידה מדעית, והאתגרים וההשפעות (הכלכליות, החברתיות והבריאותיות) הכרוכים בתפעולם." },
+                        { id: "q1b", type: "open", points: 4, instruction: "1. ב. לפי פסקאות 1-2, ציין/י שתי מטרות עיקריות של פארקי המדע לפי הטקסט.", rubric: "שתי מטרות: 1. יצירת חוויות בילוי ולמידה (רכישת ידע בטכנולוגיה, קיימות, בריאות). 2. סיוע להגשמה עצמית של צעירים דרך חוויות חיוביות ומסקרנות." },
+                        { id: "q2a", type: "open", points: 3, instruction: "2. א. לפי פסקה 1, באילו שני תחומים עיקריים משקיעות מערכות החינוך בפארקי המדע?", rubric: "1. פיתוח סביבות למידה חדשניות. 2. תפעול / משאבים ועלויות צמיחה." },
+                        { id: "q2b", type: "open", points: 3, instruction: "2. ב. לפי פסקה 2, מהו התפקיד של מֻמְחִית בתחום טֶקְסְטִיל בתכנון תערוכה?", rubric: "לייעץ כיצד לבחור בגד / חומרים מיוחדים לחליפת חלל או מוצגים." }
+                    ]
+                },
+                {
+                    title: "פרק ראשון: הבנת הנקרא (שאלות 3-4)",
+                    showText: true,
+                    questions: [
+                        { id: "q3a", type: "open", points: 4, instruction: "3. א. ציין/י שני יתרונות של הקמת פארקי מדע באזורים הֲרָרִיִּים או בשולי ערים.", rubric: "יתרון 1: ניצול קרקע פנויה. יתרון 2: הצעת נוף ענקי ומרשים (המושך קהל ומאפשר בניית מלונות יוקרה)." },
+                        { id: "q3b", type: "open", points: 4, instruction: "3. ב. ציין/י שני חסרונות או קשיים הקשורים בהתנהגות המבקרים או בצפיפות.", rubric: "חסרון 1: חוסר מעשה, המתנה בתור ותלונות על העומס. חסרון 2: סכנה בריאותית/בטיחותית במקרה של דליקה או תקלה טכנית עקב נהירה מוגזמת לחלל קטן." },
+                        {
+                            id: "q4", type: "open", points: 8, instruction: "4. השלמת משפטים: השלימו את המשפטים הבאים לפי המידע בטקסט (ענו במילים שלכם או מהטקסט).",
+                            subQuestions: [
+                                { label: "א. מנהלי הפארקים משתמשים בחיישנים למדידת צפיפות כדי ש...", id: "q4a" },
+                                { label: "ב. מומחי הבריאות חוזים עלייה במחלות כרוניות משום ש...", id: "q4b" },
+                                { label: "ג. תכנון מסלול התנועה של המבקרים דורש מיומנות גבוהה, משום ש...", id: "q4c" }
+                            ],
+                            rubric: "א. ...ימנעו הסלמה של מצבי סיכון (או ימנעו סכנות בריאותיות/צפיפות יתר).\nב. ...מבקרים רבים נוטים לזלילה במזון מהיר ומשקאות מתוקים בזמן החופשה (הרגלי אכילה לקויים).\nג. ...יש לבחון לעיתים קרובות את יעילות כל מוצג / למנוע צפיפות ותורים / כדי לתכנן היטב את תנועת האנשים ולמנוע עומס."
+                        }
+                    ]
+                },
+                {
+                    title: "פרק ראשון: הבנת הנקרא (שאלות 5-6)",
+                    showText: true,
+                    questions: [
+                        {
+                            id: "q5", type: "open", points: 8, instruction: "5. משמעות מילים מן ההקשר. הסבר/י את משמעות המילים לפי ההקשר בטקסט.",
+                            subQuestions: [
+                                { label: "א. סְתִירָה (פסקה 7)", id: "q5a" },
+                                { label: "ב. דִּילֶמָה (פסקה 4)", id: "q5b" },
+                                { label: "ג. הַסְלָמָה (פסקה 3)", id: "q5c" },
+                                { label: "ד. נְהִירָה (פסקה 3)", id: "q5d" }
+                            ],
+                            rubric: "א. סתירה - התנגשות, ניגוד בין שני דברים.\nב. דילמה - התלבטות, בעיה המציעה שתי אפשרויות שקשה לבחור ביניהן.\nג. הסלמה - החמרה, החרפה של המצב.\nד. נהירה - זרימה המונית של אנשים, הגעה בכמויות גדולות."
+                        },
+                        { id: "q6a", type: "open", points: 3, instruction: "6. א. כיצד קשורה פסקה 3 לפסקה 2? הסבר/י במשפט אחד.", rubric: "פסקה 3 מוסיפה ומפרטת אתגר תכנוני נוסף (אוורור וצפיפות) על האתגרים התכנוניים והחומריים שהוצגו בפסקה 2." },
+                        { id: "q6b", type: "open", points: 4, instruction: "6. ב. מה הקשר בין פארקי המדע לתחום התיירות כפי שהוא מתואר בפסקה 8?", rubric: "פארקי המדע הופכים לחלק מיעד חופשה רחב יותר, כאשר משפחות משלבות טיסות (למשל מנתב״ג) ותיירות יחד עם הביקור בפארק, מה שיוצר מערכת יחסים כלכלית ותיירותית." }
+                    ]
+                },
+                {
+                    title: "פרק ראשון: שאלות רב-ברירה (7-8)",
+                    showText: true,
+                    questions: [
+                        {
+                            id: "q7a", type: "mcq", points: 3, instruction: "7. א. מהי הדרך המדויקת ביותר לתאר את הבעיה המרכזית בנושא התזונה בפארקי המדע, כפי שהיא מוצגת בטקסט?",
+                            options: [
+                                "הפארקים אינם מאפשרים למבקרים לקנות מזון כלל.",
+                                "הפארקים מעודדים את המבקרים להביא מזון מהבית במקום לקנות במקום.",
+                                "הפארקים מוכרים מזון לא בריא כדי לספק נוחות למבקרים, ובכך יוצרים סתירה למסרים הבריאותיים שהם מציגים.",
+                                "הפארקים אינם מודעים כלל להשלכות הבריאותיות של המזון שהם מוכרים."
+                            ],
+                            correctAnswer: 2,
+                            rubric: "תשובה נכונה: 3 - הפארקים מוכרים מזון לא בריא כדי לספק נוחות, ובכך יוצרים סתירה למסרים הבריאותיים."
+                        },
+                        {
+                            id: "q7b", type: "mcq", points: 4, instruction: "7. ב. מהו המסר המרכזי של המשפט המסכם את היחסים בין מדע, כלכלה וחברה, בסוף הטקסט?",
+                            options: [
+                                "כל החלטה כלכלית בפארק המדע מבטיחה הצלחה מדעית וחברתית.",
+                                "כל החלטה בפארק המדע עלולה גם ליצור ויתור על הזדמנויות, וגם לאפשר צמיחה בתחומים שונים.",
+                                "ההחלטות בפארק המדע קשורות רק לשיקולים כלכליים, ללא קשר לחברה ולמדע.",
+                                "מנהלי פארקי המדע מעדיפים לוותר על שיקולים חברתיים כדי לשמור על רווחיות."
+                            ],
+                            correctAnswer: 1,
+                            rubric: "תשובה נכונה: 2 - כל החלטה עלולה ליצור ויתור אך גם צמיחה."
+                        },
+                        {
+                            id: "q8a", type: "mcq", points: 3, instruction: "8. א. לפי הטקסט, מהו החשש העיקרי של מנהלי הפארקים שבוחרים להשקיע בעיקר באטרקציות צבעוניות ומרגשות?",
+                            options: [
+                                "שהמבקרים לא יצליחו להבין את ההסברים המדעיים בגלל רעש.",
+                                "שפארקי המדע יאבדו את היוקרה שלהם לעומת מוזיאונים אחרים.",
+                                "שקהל המבקרים יעדיף לעבור לפארקי שעשועים \"רגילים\".",
+                                "שיידרש מהם תקציב גדול, אך לא תהיה ודאות כלכלית לגבי החזר ההשקעה."
+                            ],
+                            correctAnswer: 3,
+                            rubric: "תשובה נכונה: 4 - שיידרש תקציב גדול וללא ודאות כלכלית להחזר."
+                        },
+                        {
+                            id: "q8b", type: "mcq", points: 3, instruction: "8. ב. איזה טיעון הבא תומך בעמדה שלפיה יש להעדיף תערוכות שקטות המדגישות חשיבה ביקורתית?",
+                            options: [
+                                "הן מאפשרות למבקרים להתנסות בניסויים פשוטים ולהבין רעיונות לעומק, ולא רק להתרשם מגירויים חזותיים.",
+                                "הן זולות יותר מכל אטרקציה אחרת ולכן אינן דורשות תכנון.",
+                                "הן מונעות לחלוטין צפיפות ובעיות בטיחות בפארק.",
+                                "הן מתאימות רק למבקרים מבוגרים ואינן מיועדות לתלמידים."
+                            ],
+                            correctAnswer: 0,
+                            rubric: "תשובה נכונה: 1 - התנסות פשוטה והבנה לעומק."
+                        },
+                        {
+                            id: "q8c", type: "mcq", points: 3, instruction: "8. ג. איזה טיעון הבא תומך בעמדה שלפיה יש להעדיף אטרקציות מרגשות?",
+                            options: [
+                                "הן מבטלות את הצורך בהסברים מדעיים מורכבים.",
+                                "הן יכולות למשוך יותר מבקרים לפארק, וכך להגדיל את ההכנסות ולממן גם פעילויות לימודיות אחרות.",
+                                "הן מקטינות את הצורך באוורור ובניהול קהל.",
+                                "הן מונעות לחלוטין בעיות של תזונה לא בריאה בפארק."
+                            ],
+                            correctAnswer: 1,
+                            rubric: "תשובה נכונה: 2 - יכולות למשוך יותר קהל ולהגדיל הכנסות."
+                        }
+                    ]
+                },
+                {
+                    title: "פרק שני: סיכום בורר (25 נקודות)",
+                    showText: false,
+                    content: `
+                        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 shadow-sm mb-8">
+                            <div class="flex justify-between items-center border-b border-amber-200 pb-2 mb-4">
+                                <h3 class="font-bold text-xl text-amber-900">טקסט לסיכום</h3>
+                            </div>
+                            <div class="bg-amber-100 text-amber-800 text-sm p-3 rounded-lg mb-4 flex items-start gap-2">
+                                <i data-lucide="info" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+                                <p><strong>טיפ:</strong> קראו בעיון את הטקסט הקצר. שימו לב לחלוקה ל-סעיף א' ול-סעיף ב' בשאלות שלמטה.</p>
+                            </div>
+                            <div class="prose max-w-none text-slate-800 leading-relaxed text-justify text-lg pr-2 selection:bg-amber-300 selection:text-amber-900 cursor-text">
+                                ${SUMMARY_TEXT}
+                            </div>
+                        </div>
+                    `,
+                    questions: [
+                        {
+                            id: "q_summary_title",
+                            type: "open",
+                            points: 12,
+                            instruction: "סעיף א: בחירת כותרת (12 נקודות)\nשימו לב: הכותרת מתייחסת לטקסט הקצר בלבד!\nענו על אחת משתי האפשרויות הבאות לבחירתכם (אין צורך לענות על שתיהן):",
+                            subQuestions: [
+                                { label: "אפשרות 1: בחרו את הכותרת המתאימה ביותר מהרשימה הבאה (1. השפעת פארקי המדע על בחירת מקצוע | 2. דילמת התקצוב בפארקי מדע | 3. תלמידי תיכון בפארק מדע). ציינו איזו כותרת בחרתם ונמקו את בחירתכם:", id: "summary_title_opt1" },
+                                { label: "אפשרות 2: הציעו כותרת משלכם לטקסט הקצר ונמקו מדוע היא מתאימה:", id: "summary_title_opt2" }
+                            ],
+                            rubric: "מחוון לסעיף א':\n• על התלמיד לענות רק על אחת מן האפשרויות.\n• אפשרות 1: הכותרת הנכונה היא 'השפעת פארקי המדע על בחירת מקצוע'. נימוק: הטקסט עוסק בסקר הבוחן תרומה להגשמה עצמית, בחירת מקצועות מדעיים וההשקעה הנדרשת כדי שכולם ישתתפו.\n• אפשרות 2: כל כותרת שתשקף את הנושא המרכזי של הטקסט (סקר, השפעה חינוכית/מקצועית, ונגישות לפארקים) תתקבל, ובלבד שהנימוק מבוסס על תוכן הטקסט הקצר."
+                        },
+                        {
+                            id: "summary1",
+                            type: "textarea",
+                            points: 13,
+                            instruction: "סעיף ב: כתיבת הסיכום (13 נקודות)\nסכמו את הטקסט הקצר בהיקף של 10-15 שורות.\nבסיכומכם עליכם להתייחס לנקודות הבאות מתוך הטקסט:\n1. מטרת הסקר.\n2. ההנחות השונות שנבדקו בסקר.\n3. המסקנה העיקרית.\n\nאזהרה חמורה: חל איסור מוחלט להעתיק משפטים מהטקסט! יש לנסח את הסיכום במילים שלכם בלבד. העתקה תגרור פסילה או הורדת נקודות משמעותית.",
+                            rubric: "מחוון אגרסיבי להערכת סעיף ב' (סיכום):\n1. בדיקת תלות בטקסט/העתקה (קריטי!): אם התלמיד העתיק משפטים שלמים כלשונם מהטקסט - יש להפחית 50%-100% מנקודות התוכן. חובה לראות שימוש במילים נרדפות או ניסוח עצמאי.\n2. תוכן חובה:\n   • מטרת הסקר: בדיקת התרומה להגשמה עצמית ובחירת מקצוע עתידי.\n   • הנחות שנבדקו: האם המחיר מונע ממשפחות מוחלשות להגיע או שהיוקרה דווקא מושכת אותן.\n   • מסקנה: חובה להשקיע משאבים ציבוריים כדי להנגיש את החוויה לכולם.\n3. מבנה, לכידות ואורך: אורך מדויק של 10-15 שורות. מבנה לוגי רציף (פתיחה, גוף, סיום) עם מילות קישור הולמות ('ראשית', 'בנוסף', 'המסקנה העולה היא ש...'). תקינות תחבירית ולשונית."
+                        }
+                    ]
+                },
+                {
+                    title: "פרק שלישי: ידע לשון (בחירה בין שאלה 10 לשאלה 11 - 15 נקודות)",
+                    showText: false,
+                    isLanguageChoice: true,
+                    questions10: [
+                        { id: "q10a_intro", type: "info", instruction: "שאלה 10: הפועל והשם\n\nא. הפועל (6 נקודות)\nלפניכם משפט: \"בזכות שיתוף הפעולה בין האוניברסיטה לבין פארק המדע הוֹזִילוּ את מחירי הכרטיסים לקבוצות תלמידים.\"" },
+                        { id: "q10a_1", type: "short", points: 2, instruction: "א. כתבו את השורש של הפועל 'הוֹזִילוּ':", correctAnswer: "ז-ו-ל", rubric: "השורש הוא ז-ו-ל" },
+                        { id: "q10a_2", type: "short", points: 2, instruction: "ב. כתבו את הבניין של הפועל 'הוֹזִילוּ':", correctAnswer: "הפעיל", rubric: "הבניין הוא הפעיל" },
+                        { id: "q10a_3", type: "short", points: 2, instruction: "ג. כתבו פועל אחר מאותו שורש בבניין הופעל, המתאים למשפט: 'בעקבות ההנחה החדשה, מחירי הכרטיסים _____________ באופן משמעותי.'", correctAnswer: "הוזלו", rubric: "הפועל הוא הוזלו" },
+                        { id: "q10b_intro", type: "info", instruction: "ב. השם (6 נקודות)\nלפניכם שלושה משפטים, ובכל אחד שם עצם. \n1. רִיצָה ממושכת בפארק המדע עשויה לתרום לבריאות.\n2. הַתֵּרוּצִים של חלק מן המבקרים לא היו משכנעים.\n3. מֵרוֹץ התערוכות החדשות יוצר תחרות קשה." },
+                        {
+                            id: "q10b_1", type: "mcq", points: 2, instruction: "סמנו את שם העצם יוצא הדופן מבחינת השורש:",
+                            options: ["רִיצָה", "הַתֵּרוּצִים", "מֵרוֹץ"], correctAnswer: 1, rubric: "התשובה הנכונה: התרוצים"
+                        },
+                        { id: "q10b_2", type: "short", points: 2, instruction: "כתבו את השורש של שם העצם יוצא הדופן:", correctAnswer: "ת-ר-צ", rubric: "השורש ת-ר-צ" },
+                        { id: "q10b_3", type: "short", points: 2, instruction: "כתבו את השורש המשותף לשני שמות העצם האחרים:", correctAnswer: "ר-ו-צ", rubric: "השורש המשותף ר-ו-צ" },
+                        { id: "q10c_1", type: "short", points: 1.5, instruction: "ג. מילות יחס (3 נקודות) השלימו: שיתוף הפעולה ___ החוקרים לבין מנהלי הפארק הוביל לפיתוח.", correctAnswer: "בין", rubric: "בין" },
+                        { id: "q10c_2", type: "short", points: 1.5, instruction: "השלימו: במקרים מסוימים קשה להימנע ___ עומס מבקרים בימי החופשה.", correctAnswer: "מ", rubric: "מ (או מעומס)" }
+                    ],
+                    questions11: [
+                        { id: "q11_intro", type: "info", instruction: "שאלה 11: תחביר ושחבור\n" },
+                        {
+                            id: "q11a", type: "open", points: 6, instruction: "א. סוגי משפטים: קבעו לגבי כל משפט אם הוא פשוט, מחובר או מורכב.",
+                            subQuestions: [
+                                { label: "1. בפארק המדע הוקמו אולמות חדשים, והמבקרים נהנים מחוויה נוחה יותר.", id: "q11a_1" },
+                                { label: "2. כאשר מספר המבקרים עולה על התכנון המקורי, צוות האבטחה מתגבר את הנוכחות בשערים.", id: "q11a_2" },
+                                { label: "3. אחת הסיבות לפופולריות של פארקי המדע בקרב תלמידים היא השילוב בין בילוי לבין למידה פעילה.", id: "q11a_3" }
+                            ],
+                            rubric: "1. מחובר (איחוי)\n2. מורכב\n3. פשוט"
+                        },
+                        {
+                            id: "q11b", type: "open", points: 3, instruction: "ב. תפקיד תחבירי: מהו התפקיד התחבירי של המילים הבאות מתוך המשפטים הקודמים? (נושא, נשוא, לוואי, מושא, תיאור)",
+                            subQuestions: [
+                                { label: "'אולמות חדשים' (הוקמו אולמות חדשים...)", id: "q11b_1" },
+                                { label: "'כאשר מספר המבקרים עולה' (הפסוקית כולה)", id: "q11b_2" },
+                                { label: "'צוות האבטחה' (צוות האבטחה מתגבר...)", id: "q11b_3" }
+                            ],
+                            rubric: "1. 'אולמות חדשים' - נושא\n2. 'כאשר מספר המבקרים עולה' - תיאור (פסוקית זמן)\n3. 'צוות האבטחה' - נושא"
+                        },
+                        { id: "q11c", type: "open", points: 2, instruction: "ג. המרה מפעיל לסביל. הפכו למבנה סביל: 'מתכנני הפארק פיתחו חוויה מוחשית חדשה לתלמידים.'", rubric: "חוויה מוחשית חדשה פותחה לתלמידים (על ידי מתכנני הפארק)." },
+                        {
+                            id: "q11d", type: "open", points: 4, instruction: "ד. מילות קישור והתאמה. \n1. השלימו שתי מילות קישור (כאשר, כדי, למרות, אבל, לאחר מכן, בכל זאת): \n'_____ מספר המבקרים בפארק עלה בשעות הבוקר, צוות הניהול שמר על סדר, ו______ אירעו תקלות משמעותיות.'",
+                            subQuestions: [
+                                { label: "מילה חסרה 1:", id: "q11d_1" },
+                                { label: "מילה חסרה 2:", id: "q11d_2" },
+                                { label: "תקנו את המילה השגויה: 'בגלל בעיות תקציב, התערוכות החדש נפתחו במועד.'", id: "q11d_3" },
+                                { label: "תקנו את המילה השגויה: 'החוקרות הצעירות הציגו ניסוי מעניינת בפני הקהל.'", id: "q11d_4" }
+                            ],
+                            rubric: "1. מילה ראשונה: כאשר. מילה שניה: לא / או למרות ש... אבל...\n (ניסוח תקין לדוגמה: למרות ש... אבל לא אירעו, או כאשר... בכל זאת לא...)\nתיקון א: החדשות (התערוכות החדשות).\nתיקון ב: מעניין (ניסוי מעניין)."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // State
+        let currentPage = 0;
+        let answers = {};
+        let examSubmitted = false;
+        let finalAiResult = null;
+        let languageChoice = '10';
+
+        // Escape HTML
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return '';
+            return str.replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;')
+                      .replace(/'/g, '&#039;');
+        }
+
+        // Action Handlers
+        window.handleAnswerChange = function(qId, value) {
+            answers[qId] = value;
+        };
+
+        window.handleMCQChange = function(qId, value) {
+            answers[qId] = value;
+            renderApp();
+        };
+
+        window.goToNextPage = function() {
+            if (currentPage < examData.pages.length - 1) {
+                currentPage++;
+                window.scrollTo(0, 0);
+                renderApp();
+            } else {
+                submitExamWithAI();
+            }
+        };
+
+        window.goToPrevPage = function() {
+            if (currentPage > 0) {
+                currentPage--;
+                window.scrollTo(0, 0);
+                renderApp();
+            }
+        };
+
+        window.setLanguageChoice = function(choice) {
+            languageChoice = choice;
+            renderApp();
+        };
+
+        // --- AI API INTEGRATION ---
+        async function fetchAIResponse(promptText) {
+            const apiKey = ""; // The execution environment provides the key at runtime
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: promptText }] }],
+                systemInstruction: { parts: [{ text: "You are an expert Hebrew language teacher grading a High School Bagrut exam. Evaluate fairly according to rubrics, output strictly JSON." }] },
+                generationConfig: { responseMimeType: "application/json" }
+            };
+
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error("API Error");
+                    const result = await response.json();
+                    const text = result.candidates[0].content.parts[0].text;
+                    return JSON.parse(text);
+                } catch (err) {
+                    if (i === 4) throw err;
+                    await new Promise(r => setTimeout(r, delays[i]));
+                }
+            }
+        }
+
+        function generateMockAIResult(data) {
+            // Fallback mock grading if API fails
+            let totalPoints = 0;
+            let awardedPoints = 0;
+            let feedbackPerQuestion = {};
+
+            data.forEach(q => {
+                let pts = parseFloat(q.maxPoints) || 2;
+                totalPoints += pts;
+                let awd = 0;
+                let feedback = "";
+
+                let ansStr = typeof q.studentAnswer === 'string' ? q.studentAnswer : JSON.stringify(q.studentAnswer);
+                if (ansStr.trim() === "לא נענה" || ansStr.trim() === "") {
+                    awd = 0;
+                    feedback = "לא ניתנה תשובה לשאלה זו.";
+                } else if (ansStr.length > 30) {
+                    awd = pts;
+                    feedback = "תשובה מלאה וטובה. עמדת בכל הדרישות.";
+                } else if (ansStr.length > 5) {
+                    awd = Math.max(0, pts - 1);
+                    feedback = "תשובה סבירה אך מעט חסרה. היה ניתן להרחיב ולהתבסס יותר על הטקסט.";
+                } else {
+                    awd = 0;
+                    feedback = "התשובה אינה מספקת או אינה נכונה.";
+                }
+                awardedPoints += awd;
+                feedbackPerQuestion[q.id] = { awardedPoints: awd, feedback: feedback };
+            });
+
+            let finalScore = Math.round((awardedPoints / totalPoints) * 100);
+            return {
+                finalScore: finalScore,
+                recommendations: "שגיאת חיבור לשרת ה-AI המתקדם. זהו ציון משוער אוטומטי. מומלץ לחזור על נושאי הבנת הנקרא ולתרגל כתיבת סיכום מקיף ומלא בהתאם למחוון.",
+                feedbackPerQuestion: feedbackPerQuestion
+            };
+        }
+
+        window.submitExamWithAI = async function() {
+            document.getElementById('ai-loading').classList.remove('hidden');
+
+            let examDataForAI = [];
+            examData.pages.forEach(page => {
+                let qsToProcess = [];
+                if (page.isLanguageChoice) {
+                    qsToProcess = languageChoice === '10' ? page.questions10 : page.questions11;
+                } else if (page.questions) {
+                    qsToProcess = page.questions;
+                }
+
+                qsToProcess.forEach(q => {
+                    if (q.type === 'info') return;
+                    
+                    let studentAnswer = answers[q.id];
+                    if (q.subQuestions) {
+                        let subAns = {};
+                        q.subQuestions.forEach(sq => {
+                            subAns[sq.label] = answers[sq.id] || "";
+                        });
+                        studentAnswer = JSON.stringify(subAns);
+                    } else if (q.type === 'mcq') {
+                        studentAnswer = answers[q.id] !== undefined ? q.options[answers[q.id]] : "";
+                    }
+                    
+                    examDataForAI.push({
+                        id: q.id,
+                        instruction: q.instruction,
+                        maxPoints: q.points || 4,
+                        studentAnswer: studentAnswer || "לא נענה",
+                        expectedRubric: q.rubric || q.correctAnswer || "Check text"
+                    });
+                });
+            });
+
+            const promptText = `
+                Evaluate the student's answers based on the expected rubrics.
+                1. Calculate the points awarded for each question.
+                2. Provide short, constructive feedback for EACH question in Hebrew.
+                3. Provide overall recommendations for the student in Hebrew.
+                4. Calculate the total awarded points and normalize the final score to a scale of 0 to 100.
+                
+                Exam Data: ${JSON.stringify(examDataForAI)}
+                
+                Provide the output strictly in this JSON format:
+                {
+                  "finalScore": <number between 0-100>,
+                  "recommendations": "<text in Hebrew>",
+                  "feedbackPerQuestion": {
+                    "<question_id>": {
+                      "awardedPoints": <number>,
+                      "feedback": "<text in Hebrew>"
+                    }
+                  }
+                }
+            `;
+
+            try {
+                finalAiResult = await fetchAIResponse(promptText);
+            } catch(e) {
+                console.error("AI grading failed, using fallback mock generator", e);
+                finalAiResult = generateMockAIResult(examDataForAI);
+            }
+
+            examSubmitted = true;
+            document.getElementById('ai-loading').classList.add('hidden');
+            renderSummaryPage();
+        };
+
+        // Render Functions
+        function renderQuestion(q) {
+            if (q.type === 'info') {
+                return `<div class="bg-slate-100 p-4 rounded-lg my-4 text-slate-800 font-medium whitespace-pre-line">${q.instruction}</div>`;
+            }
+
+            const val = answers[q.id] !== undefined ? answers[q.id] : (q.type === 'mcq' ? null : "");
+
+            let html = `
+                <div class="mb-8 p-6 bg-white rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-lg mb-4 text-slate-800 whitespace-pre-line">${q.instruction}</h4>
+            `;
+
+            if (q.type === 'open' && !q.subQuestions) {
+                html += `<textarea class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-y min-h-[100px]" placeholder="הקלד את תשובתך כאן..." oninput="handleAnswerChange('${q.id}', this.value)">${escapeHTML(val)}</textarea>`;
+            }
+
+            if (q.type === 'textarea') {
+                html += `<textarea class="w-full p-4 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent min-h-[150px] text-lg leading-relaxed" placeholder="כתוב את הסיכום שלך כאן..." oninput="handleAnswerChange('${q.id}', this.value)">${escapeHTML(val)}</textarea>`;
+            }
+
+            if (q.subQuestions) {
+                html += `<div class="space-y-4">`;
+                q.subQuestions.forEach(sq => {
+                    const sqVal = answers[sq.id] || "";
+                    html += `
+                        <div>
+                            <label class="block mb-2 font-medium text-slate-700 whitespace-pre-line">${sq.label}</label>
+                            <input type="text" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" value="${escapeHTML(sqVal)}" oninput="handleAnswerChange('${sq.id}', this.value)">
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            if (q.type === 'mcq') {
+                html += `<div class="space-y-3 mt-4">`;
+                q.options.forEach((opt, idx) => {
+                    const isSelected = val === idx;
+                    let optionClass = "p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 flex items-center gap-3 ";
+                    optionClass += isSelected ? "bg-blue-50 border-blue-500" : "border-slate-200 hover:border-blue-300 hover:bg-slate-50";
+
+                    html += `
+                        <div class="${optionClass}" onclick="handleMCQChange('${q.id}', ${idx})">
+                            <div class="w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${isSelected ? 'border-blue-500 bg-blue-500' : 'border-slate-400'}">
+                                ${isSelected ? '<div class="w-2.5 h-2.5 bg-white rounded-full"></div>' : ''}
+                            </div>
+                            <span>${opt}</span>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            if (q.type === 'short') {
+                let inputClass = "w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent ";
+                html += `
+                    <div class="relative">
+                        <input type="text" class="${inputClass}" value="${escapeHTML(val)}" oninput="handleAnswerChange('${q.id}', this.value)">
+                    </div>`;
+            }
+
+            html += `</div>`;
+            return html;
+        }
+
+        function renderStudentAnswerForSummary(q) {
+            let val = answers[q.id];
+            if (q.type === 'mcq') {
+                return val !== undefined ? escapeHTML(q.options[val]) : "לא נענה";
+            }
+            if (q.subQuestions) {
+                let parts = [];
+                q.subQuestions.forEach(sq => {
+                    parts.push(`<strong>${escapeHTML(sq.label)}</strong> ${escapeHTML(answers[sq.id] || "לא נענה")}`);
+                });
+                return parts.join("<br>");
+            }
+            return escapeHTML(val || "לא נענה");
+        }
+
+        function renderSummaryPage() {
+            const appDiv = document.getElementById('app');
+            let finalScoreNum = parseInt(finalAiResult.finalScore) || 0;
+            let scoreColor = finalScoreNum >= 80 ? 'border-emerald-500 text-emerald-600' : (finalScoreNum >= 60 ? 'border-amber-500 text-amber-600' : 'border-red-500 text-red-600');
+
+            let html = `
+                <header class="bg-white shadow-sm sticky top-0 z-50">
+                    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-emerald-600 text-white p-2 rounded-lg">
+                                <i data-lucide="award" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold text-slate-800">סיכום הבחינה - הערכת AI</h1>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-6">
+                            <button onclick="location.reload()" class="text-sm font-bold text-slate-500 hover:text-slate-800">התחל מבחן מחדש</button>
+                            <img src="https://www.dropbox.com/scl/fi/n99ekuziwuwo0gw6ayyz4/1c81ae1c-2456-410c-999a-36e725a9728b.png?rlkey=63ta8ngn55sdabt6mfdbyt10z&st=70tr43s5&raw=1" alt="לוגו" class="h-10 object-contain">
+                        </div>
+                    </div>
+                </header>
+
+                <main class="max-w-4xl mx-auto px-4 py-8">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10">
+                        <div class="text-center mb-10">
+                            <h2 class="text-3xl font-bold text-slate-800 mb-6">הציון שלך</h2>
+                            <div class="mx-auto inline-flex items-center justify-center w-40 h-40 rounded-full border-[10px] ${scoreColor} text-5xl font-bold shadow-sm">
+                                ${finalScoreNum}
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-10">
+                            <h3 class="text-xl font-bold text-blue-900 mb-3 flex items-center gap-2">
+                                <i data-lucide="sparkles" class="w-6 h-6"></i>
+                                המלצות AI כלליות לשיפור:
+                            </h3>
+                            <p class="text-slate-800 leading-relaxed text-lg">${escapeHTML(finalAiResult.recommendations)}</p>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6 border-b border-slate-200 pb-2">פירוט התשובות והניקוד:</h3>
+                        <div class="space-y-8">
+            `;
+
+            examData.pages.forEach(page => {
+                let qsToProcess = [];
+                if (page.isLanguageChoice) {
+                    qsToProcess = languageChoice === '10' ? page.questions10 : page.questions11;
+                } else if (page.questions) {
+                    qsToProcess = page.questions;
+                }
+
+                qsToProcess.forEach(q => {
+                    if (q.type === 'info') return;
+                    
+                    const feedbackObj = finalAiResult.feedbackPerQuestion[q.id] || { awardedPoints: 0, feedback: "לא התקבל משוב לשאלה זו" };
+                    
+                    html += `
+                        <div class="border border-slate-200 rounded-xl p-5 bg-slate-50">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                                    <h4 class="font-bold text-slate-800 text-lg">${escapeHTML(q.instruction)}</h4>
+                                    <span class="bg-white border border-slate-300 text-slate-800 font-bold px-4 py-1.5 rounded-full text-sm whitespace-nowrap shadow-sm">
+                                        ניקוד: <span class="${feedbackObj.awardedPoints == q.points ? 'text-green-600' : 'text-slate-700'}">${feedbackObj.awardedPoints}</span> / ${q.points || '?'}
+                                    </span>
+                                </div>
+                                <div class="mb-5">
+                                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">התשובה שלך:</span>
+                                    <div class="text-slate-700 bg-white p-3 rounded-lg border border-slate-200">${renderStudentAnswerForSummary(q)}</div>
+                                </div>
+                                <div class="bg-indigo-50 border-r-4 border-indigo-500 p-4 rounded-l-lg">
+                                    <span class="text-sm font-bold text-indigo-900 flex items-center gap-1.5 mb-1.5">
+                                        <i data-lucide="message-square-text" class="w-4 h-4"></i>
+                                        משוב הבוחן (AI):
+                                    </span>
+                                    <p class="text-indigo-800">${escapeHTML(feedbackObj.feedback)}</p>
+                                </div>
+                            </div>
+                        `;
+                });
+            });
+
+            html += `
+                        </div>
+                    </div>
+                </main>
+            `;
+
+            appDiv.innerHTML = html;
+            lucide.createIcons();
+            window.scrollTo(0, 0);
+        }
+
+        function renderApp() {
+            if (examSubmitted) {
+                renderSummaryPage();
+                return;
+            }
+
+            const pageData = examData.pages[currentPage];
+            const appDiv = document.getElementById('app');
+
+            if (pageData.isIntro) {
+                // Landing page layout based on the user's screenshot
+                let html = `
+                    <div class="min-h-screen bg-slate-50 flex flex-col relative pb-32">
+                        <!-- Intro Header -->
+                        <header class="bg-[#1e3480] text-white shadow-md">
+                            <div class="px-6 py-3 flex items-center">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                                </div>
+                            </div>
+                        </header>
+
+                        <main class="flex-1 flex flex-col items-center pt-16 md:pt-24 px-4 w-full">
+                            <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-4">
+                                <img src="https://www.dropbox.com/scl/fi/n99ekuziwuwo0gw6ayyz4/1c81ae1c-2456-410c-999a-36e725a9728b.png?rlkey=63ta8ngn55sdabt6mfdbyt10z&st=70tr43s5&raw=1" alt="לוגו" class="h-20 md:h-24 object-contain bg-white rounded-xl p-2 shadow-sm border border-slate-200">
+                                <h2 class="text-4xl md:text-5xl font-bold text-[#2a4396] text-center md:text-right leading-tight">מבחן סימולציה בעברית:<br>הבנה, הבעה ולשון</h2>
+                            </div>
+                            <p class="text-2xl text-slate-600 mb-12">שאלון 14271</p>
+                            
+                            <div class="max-w-3xl w-full bg-white rounded-xl shadow-lg border-r-[6px] border-[#3b82f6] p-8 md:p-10 text-right">
+                                <h3 class="text-2xl font-bold text-slate-800 mb-4">מבנה השאלון:</h3>
+                                <ul class="list-disc list-inside text-xl text-slate-700 space-y-2 mb-8 pr-4">
+                                    <li>פרק ראשון – הבנת הנקרא: 60 נקודות</li>
+                                    <li>פרק שני – סיכום בורר: 25 נקודות</li>
+                                    <li>פרק שלישי – ידע לשון: 15 נקודות</li>
+                                </ul>
+                                
+                                <p class="text-lg text-slate-700 leading-relaxed"><strong class="font-bold text-slate-900">הוראות לתלמיד:</strong><br>המבחן נועד ללמידה עצמית. קראו היטב, ענו על השאלות (תוכלו להעתיק טקסט מהקטע), ובסוף המבחן תגישו את תשובותיכם. ה-AI שלנו יסרוק את עבודתכם מול המחוון הרשמי, ייתן לכם ציון ויפיק לכם עמוד סיכום אישי עם המלצות ופירוט מלא לשיפור.</p>
+                            </div>
+
+                            <div class="fixed bottom-8 left-8 z-50">
+                                <button onclick="goToNextPage()" class="bg-[#3b82f6] hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-bold text-xl shadow-lg transition-transform hover:scale-105 active:scale-95 flex items-center gap-3">
+                                    התחל מבחן
+                                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                                </button>
+                            </div>
+                        </main>
+                    </div>
+                `;
+                appDiv.innerHTML = html;
+                lucide.createIcons();
+                return;
+            }
+
+            // Normal Exam Layout
+            const progressPercentage = (currentPage / (examData.pages.length - 1)) * 100;
+            let html = `
+                <!-- Header -->
+                <header class="bg-white shadow-sm sticky top-0 z-50">
+                    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-blue-600 text-white p-2 rounded-lg">
+                                <i data-lucide="book-open" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold text-slate-800">בגרות בעברית לבתי ספר ערביים</h1>
+                                <p class="text-sm text-slate-500">סימולציה ולמידה עצמית</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 w-full sm:w-auto">
+                            <span class="text-sm font-medium text-slate-600 min-w-[80px]">
+                                עמוד ${currentPage} מתוך ${examData.pages.length - 1}
+                            </span>
+                            <div class="h-3 w-full sm:w-48 bg-slate-200 rounded-full overflow-hidden flex-shrink-0">
+                                <div class="h-full bg-blue-600 transition-all duration-300 ease-out" style="width: ${progressPercentage}%"></div>
+                            </div>
+                            <div class="mr-4 pr-4 border-r border-slate-200 hidden md:block">
+                                <img src="https://www.dropbox.com/scl/fi/n99ekuziwuwo0gw6ayyz4/1c81ae1c-2456-410c-999a-36e725a9728b.png?rlkey=63ta8ngn55sdabt6mfdbyt10z&st=70tr43s5&raw=1" alt="לוגו" class="h-10 object-contain bg-white rounded p-1 shadow-sm">
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Main Content -->
+                <main class="max-w-7xl mx-auto px-4 py-8">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-slate-800">${pageData.title}</h2>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-8 ${!pageData.showText ? 'justify-center' : ''}">
+                        
+                        <!-- Right/Top Side: Questions -->
+                        <div class="w-full ${pageData.showText ? 'flex-1' : 'max-w-4xl'}">
+                            
+                            ${pageData.isLanguageChoice ? `
+                                <div class="mb-8 p-6 bg-indigo-50 border-2 border-indigo-200 rounded-xl shadow-sm">
+                                    <h3 class="text-xl font-bold text-indigo-900 mb-4 flex items-center gap-2">
+                                        <i data-lucide="info" class="w-6 h-6"></i>
+                                        בחירה: עליך לענות על שאלה אחת בלבד מתוך השתיים
+                                    </h3>
+                                    <div class="flex flex-col sm:flex-row gap-4">
+                                        <button onclick="setLanguageChoice('10')" class="flex-1 p-4 rounded-xl border-2 font-bold transition-all ${languageChoice === '10' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md transform scale-[1.02]' : 'bg-white text-indigo-700 border-indigo-300 hover:bg-indigo-100'}">
+                                            שאלה 10: הפועל והשם
+                                        </button>
+                                        <button onclick="setLanguageChoice('11')" class="flex-1 p-4 rounded-xl border-2 font-bold transition-all ${languageChoice === '11' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md transform scale-[1.02]' : 'bg-white text-indigo-700 border-indigo-300 hover:bg-indigo-100'}">
+                                            שאלה 11: תחביר ושחבור
+                                        </button>
+                                    </div>
+                                </div>
+                                ${(languageChoice === '10' ? pageData.questions10 : pageData.questions11).map(renderQuestion).join('')}
+                            ` : (pageData.questions ? pageData.questions.map(renderQuestion).join('') : '')}
+                        </div>
+
+                        <!-- Left/Bottom Side: Text Reference -->
+                        ${pageData.showText ? `
+                            <div class="md:w-1/2 lg:w-[45%]">
+                                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 shadow-sm">
+                                    <div class="flex justify-between items-center border-b border-amber-200 pb-2 mb-4">
+                                        <h3 class="font-bold text-xl text-amber-900">הטקסט: פארקי מדע וחוויה מוחשית</h3>
+                                    </div>
+                                    <div class="bg-amber-100 text-amber-800 text-sm p-3 rounded-lg mb-4 flex items-start gap-2">
+                                        <i data-lucide="info" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+                                        <p><strong>טיפ:</strong> ניתן לסמן טקסט <strong>ולגרור אותו</strong> (או להעתיק) ישירות אל תיבות התשובה שמימין.</p>
+                                    </div>
+                                    <div class="prose max-w-none text-slate-800 leading-relaxed pl-2 selection:bg-amber-300 selection:text-amber-900 cursor-text text-justify">
+                                        ${examData.text1.split('\n\n').map(p => `<p class="mb-4 pr-2">${p}</p>`).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                    </div>
+                </main>
+
+                <!-- Footer Navigation -->
+                <footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50">
+                    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+                        <button onclick="goToPrevPage()" class="flex items-center gap-2 px-6 py-2.5 rounded-lg font-bold transition-colors bg-slate-200 text-slate-700 hover:bg-slate-300">
+                            <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                            העמוד הקודם
+                        </button>
+
+                        <button onclick="goToNextPage()" class="flex items-center gap-2 px-6 py-2.5 rounded-lg font-bold transition-colors ${currentPage === examData.pages.length - 1 ? 'bg-purple-600 text-white hover:bg-purple-700 shadow-md ring-2 ring-purple-300 ring-offset-1' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'}">
+                            ${currentPage === examData.pages.length - 1 ? "סיום מבחן והגשה לבדיקת AI" : "העמוד הבא"}
+                            <i data-lucide="${currentPage === examData.pages.length - 1 ? 'sparkles' : 'chevron-left'}" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </footer>
+            `;
+
+            appDiv.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApp();
+        });
+    </script>
+</body>
+</html>
